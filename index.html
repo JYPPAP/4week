@@ -1,36 +1,63 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculator</title>
+  <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/calc.css">
   <script src="js/calc.js" defer></script>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="calc_wrap">
-      <div class="calc">
-        <div class="value_view"></div>
-        <div class="result_view"></div>
-        <ul class="numpad">
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
-          <li class="num"></li>
+    <div class="content_wrap">
+      <!-- 수수료 계산 -->
+      <section id="fees">
+        <h3>수수료 계산</h3>
+        <ul class="price">
+          <li class="raw1"><span>판매금액</span>
+            <div id="sell_price">777,777,777,777</div>
+          </li>
+          <li class="raw2"><span>수수료(5%)</span>
+            <div id="fee_price">777,777,777,777</div>
+          </li>
+          <li class="raw3"><span>예상적립금액</span>
+            <div id="mile_price">777,777,777,777</div>
+          </li>
         </ul>
-      </div>
+      </section>
+      <!-- 계산기 -->
+      <section id="calc">
+        <h3>계산기 <span>calculator</span></h3>
+        <div id="result" class="display">777,777,777,777,777,777,777,777,777,777,777,777,777,777,777,777,777,777</div>
+        <div id="AC">CLEAR</div>
+        <div id="back">BACKSPACE</div>
+        <div class="num">
+          <div class="key">7</div>
+          <div class="key">8</div>
+          <div class="key">9</div>
+          <div class="key">/</div>
+          <div class="key">4</div>
+          <div class="key">5</div>
+          <div class="key">6</div>
+          <div class="key">*</div>
+          <div class="key">1</div>
+          <div class="key">2</div>
+          <div class="key">3</div>
+          <div class="key">-</div>
+          <div class="key">0</div>
+          <div class="key">00</div>
+          <div class="key">.</div>
+          <div class="key">+</div>
+        </div>
+        <div class="logo"></div>
+        <div id="enter" class="key">=</div>
+      </section>
     </div>
   </div>
 </body>
+
 </html>
