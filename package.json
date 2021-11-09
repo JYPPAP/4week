@@ -1,0 +1,25 @@
+{
+  "name": "calc",
+  "version": "1.0.0",
+  "description": "수수료 계산기 만들기",
+  "main": "/js/calc.js",
+  "scripts": {
+    "build": "babel /js -w -d dist/js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JYPPAP/4week.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JYPPAP/4week/issues"
+  },
+  "homepage": "https://github.com/JYPPAP/4week#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0"
+  }
+}

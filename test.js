@@ -1,18 +1,6 @@
 keyHash = {
   8: ".back",
-  9: ".tab",
   13: ".enter",
-  16: ".shift",
-  17: ".control",
-  18: ".alt",
-  20: ".cap",
-  27: ".esc",
-  32: ".space",
-  37: ".left",
-  38: ".up",
-  39: ".right",
-  40: ".down",
-  186: ".semi",
   187: '.add',
   189: '.sub',
   222: ".comma",
@@ -24,7 +12,6 @@ keyHash = {
   191: ".slash",
   91: '.win'
 };
-
 
 
 const cap = document.querySelector('.cap');
