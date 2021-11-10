@@ -1,5 +1,4 @@
-const keyHash = {
-  8: "",
+const numHash = {
   48: "0",
   49: "1",
   50: "2",
@@ -9,29 +8,15 @@ const keyHash = {
   54: "6",
   55: "7",
   56: "8",
-  57: "9",
-  // ∇(Num Lock)
-  96: "0",
-  97: "1",
-  98: "2",
-  99: "3",
-  100: "4",
-  101: "5",
-  102: "6",
-  103: "7",
-  104: "8",
-  105: "9",
-  106: "*",
-  107: "+",
-  109: "-",
-  110: ".",
-  111: "/",
-  // ∆(Num Lock)
-  187: "+",
-  189: "-",
-  190: ".",
-  191: "/"
+  57: "9"
 };
+const operHash = {
+  42: "*",
+  43: "+",
+  45: "-",
+  46: ".",
+  47: "/"
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   /* 출력 변수 */
@@ -39,52 +24,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
   const result = document.getElementById("result");
-  
+
   /* 입력 변수 */
-  let operatorFlag = false;
+  let operFlag = true;
   const clear = document.getElementById("AC");
   const back = document.getElementById("back");
   const enter = document.getElementById("enter");
   const keys = Array.from(document.getElementsByClassName("key"));
 
- /* 기본 값 초기화 */
-  // sell_price.textContent = "";
-  // fee_price.textContent = "";
-  // mile_price.textContent = "";
-  // result.textContent = "";
-
-  /* AC 버튼 클릭시 */
-  clear.onclick = e => {
+  /* 초기화 AC */
+  const allClear = () => {
     sell_price.textContent = "";
     fee_price.textContent = "";
     mile_price.textContent = "";
     result.textContent = "";
-  };
-  /* backspace가 입력되었을 때 */
+  }
+  allClear();
+
+  /* backspace 동작 */
   const backSpace = () => {
     result.textContent = result.textContent.slice(0, -1);
   }
+
+  /* 계산 */
+  function calculate(result) {
+    let numResult = (new Function(`return + ${result.textContent}`))();
+
+    sell_price.textContent = numResult;
+    fee_price.textContent = numResult * 0.05;
+    mile_price.textContent = numResult * 0.95;
+  }
+
+  /*******************
+   * 키보드 이벤트
+   *******************/
+  document.addEventListener('keydown', (e) => {
+    if (e.keyCode === 8) { backSpace();}
+    if (e.keyCode === 13) { calculate(result);}
+    if (e.keyCode === 27) { allClear();}
+  });
+  document.addEventListener('keypress', (e) => {
+    /* 키보드 숫자 입력. */
+    let numTarget = numHash[e.keyCode];
+    if (numTarget) {
+      operFlag = false;
+      result.textContent += numTarget;
+    }
+    /* 키보드 연산자 입력 */
+    let operTarget = operHash[e.keyCode];
+    if (operTarget) {
+      if (operFlag) { backSpace();}
+      result.textContent += operTarget;
+      operFlag = true;
+    }
+    return operFlag, result;
+  });
+
+  /*******************
+   * 클릭 이벤트
+   *******************/
+  clear.onclick = e => allClear();
+  back.onclick = e => backSpace();
+  enter.onclick = e => calculate(result);
+  /* 마우스 값 입력 */
+  keys.map(key => {
+    key.addEventListener('click', setNum);
+  });
   
 
-  /* 키보드 입력. */
-  document.addEventListener('keydown', (e) =>{
-    let target = keyHash[e.keyCode];
-    if(target === "") { backSpace();}
-    /* Shift + 8 로 *를 입력하는 경우에 대해서 추가하기. */
-    if(target) { result.textContent += target;}
-    console.log(target);
-  });
-
-  /* 마우스 입력 */
-  keys.map(key => { key.addEventListener('click', setNum);
-  });
   function setNum() {
+    /* 여기에 연산자 관련 내용 추가. */
+
     result.textContent += this.textContent;
   }
 
-  /* backspace 클릭 */
-  back.onclick = e => { backSpace();}
-  /**************
-   * 출력 및 계산
-  **************/
 });
