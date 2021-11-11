@@ -1,4 +1,9 @@
-const numHash = {
+const keyHash = {
+  42: "*",
+  43: "+",
+  45: "-",
+  46: ".",
+  47: "/",
   48: "0",
   49: "1",
   50: "2",
@@ -10,13 +15,6 @@ const numHash = {
   56: "8",
   57: "9"
 };
-const operHash = {
-  42: "*",
-  43: "+",
-  45: "-",
-  46: ".",
-  47: "/"
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   /* 출력 변수 */
@@ -26,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const result = document.getElementById("result");
 
   /* 입력 변수 */
-  let operFlag = true;
+  let oFlag = true;
   const clear = document.getElementById("AC");
   const back = document.getElementById("back");
   const enter = document.getElementById("enter");
@@ -59,25 +57,31 @@ document.addEventListener("DOMContentLoaded", () => {
    * 키보드 이벤트
    *******************/
   document.addEventListener('keydown', (e) => {
-    if (e.keyCode === 8) { backSpace();}
-    if (e.keyCode === 13) { calculate(result);}
-    if (e.keyCode === 27) { allClear();}
+    if (e.keyCode === 8)  backSpace();
+    if (e.keyCode === 13) calculate(result);
+    if (e.keyCode === 27) allClear();
   });
+
   document.addEventListener('keypress', (e) => {
-    /* 키보드 숫자 입력. */
-    let numTarget = numHash[e.keyCode];
-    if (numTarget) {
-      operFlag = false;
-      result.textContent += numTarget;
+    let Target = keyHash[e.keyCode];
+    /* 키보드 입력 애니메이션 */
+    keys.map(key => {
+      Target === key.textContent ? key.classList.add("pressed") : key.classList.remove("pressed");
+      setTimeout(() => {
+        key.classList.remove("pressed");
+      },1000)
+    });
+    /* 키보드 입력 */
+    if (typeof Target === "undefined") {
+      return true;
+    } else if (!isNaN(Target)) {
+      oFlag = false;
+      result.textContent += Target;
+    } else if(isNaN(Target)) {
+      if (oFlag) backSpace();
+      result.textContent += Target;
+      oFlag = true;
     }
-    /* 키보드 연산자 입력 */
-    let operTarget = operHash[e.keyCode];
-    if (operTarget) {
-      if (operFlag) { backSpace();}
-      result.textContent += operTarget;
-      operFlag = true;
-    }
-    return operFlag, result;
   });
 
   /*******************
@@ -91,11 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
     key.addEventListener('click', setNum);
   });
   
-
   function setNum() {
-    /* 여기에 연산자 관련 내용 추가. */
-
-    result.textContent += this.textContent;
+    if(isNaN(this.textContent)) {
+      if(oFlag) backSpace();
+      result.textContent += this.textContent;
+      oFlag = true;
+    } else {
+      oFlag = false;
+      result.textContent += this.textContent;
+    }
   }
 
 });
