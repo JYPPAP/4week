@@ -17,10 +17,15 @@ const keyHash = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* 출력 변수 */
+  /*************
+   * 수수료
+  *************/
   const sell_price = document.getElementById("sell_price");
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
+  /*************
+   * 계산기
+  *************/
   const result = document.getElementById("result");
 
   /* 입력 변수 */
@@ -31,26 +36,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const keys = Array.from(document.getElementsByClassName("key"));
 
   /* 초기화 AC */
-  const allClear = () => {
-    sell_price.textContent = "";
-    fee_price.textContent = "";
-    mile_price.textContent = "";
-    result.textContent = "";
-  }
-  allClear();
+  const allClear = () => result.textContent = "";
+  // allClear();
 
   /* backspace 동작 */
-  const backSpace = () => {
-    result.textContent = result.textContent.slice(0, -1);
-  }
+  const backSpace = () => result.textContent = result.textContent.slice(0, -1);
 
   /* 계산 */
   function calculate(result) {
-    let numResult = (new Function(`return + ${result.textContent}`))();
+    // let numResult = (new Function(`return + ${result.textContent}`))();
+    // result.textContent = numResult;
 
-    sell_price.textContent = numResult;
-    fee_price.textContent = numResult * 0.05;
-    mile_price.textContent = numResult * 0.95;
+    let calcArray = result.textContent.match(/[\*\/\+\-]|(\d+\.\d+)|\d+/g);
+    
+    console.log(calcArray);
+    calcArray.map(value => {
+      // 가장 앞에 있는게 연산자일 경우 그 앞에 0 추가하기?
+
+      /* 곱하기와 나누기를 작업. 값이 * 또는 /일 때 인덱스값이 낮은 것부터 작업
+      계산의 결과값이 나오면 그 값을 calcIndex-1. calcIndex. calcIndex+1을 제거하고 calcIndex-1의 위치에 저장하기. 이런 방법으로 앞에서부터 뒤로가면서 계산할 수 있도록 하기.
+      그런데 이게 .map 으로 해야하는 일 인지 아니면 하지 않고 해결할 수 있는 일 인지 체크 필요.
+       */
+      if (value === "*" || value === "/") {
+        
+      }
+    });
   }
 
   /*******************
