@@ -19,13 +19,22 @@ const keyHash = {
 document.addEventListener("DOMContentLoaded", () => {
   /*************
    * 수수료
-  *************/
+   *************/
   const sell_price = document.getElementById("sell_price");
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
+
+  sell_price.oninput = () => price();
+  const price = () => {
+    backSpace();
+    // sell_price.value = (sell_price.value).toString()
+    // .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    fee_price.textContent = (sell_price.value * 0.05).toLocaleString() + " 원";
+    mile_price.textContent = (sell_price.value * 0.95).toLocaleString() + " 원";
+  }
   /*************
    * 계산기
-  *************/
+   *************/
   const result = document.getElementById("result");
 
   /* 입력 변수 */
@@ -37,37 +46,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* 초기화 AC */
   const allClear = () => result.textContent = "";
-  // allClear();
+  allClear();
 
   /* backspace 동작 */
   const backSpace = () => result.textContent = result.textContent.slice(0, -1);
 
   /* 계산 */
   function calculate(result) {
-    // let numResult = (new Function(`return + ${result.textContent}`))();
-    // result.textContent = numResult;
-
     let calcArray = result.textContent.match(/[\*\/\+\-]|(\d+\.\d+)|\d+/g);
-    
+    let calc1Count = calcArray.filter(ele => ele === "*" || ele === "/").length;
+    let calc2Count = calcArray.filter(ele => ele === "+" || ele === "-").length;
     console.log(calcArray);
-    calcArray.map(value => {
-      // 가장 앞에 있는게 연산자일 경우 그 앞에 0 추가하기?
 
-      /* 곱하기와 나누기를 작업. 값이 * 또는 /일 때 인덱스값이 낮은 것부터 작업
-      계산의 결과값이 나오면 그 값을 calcIndex-1. calcIndex. calcIndex+1을 제거하고 calcIndex-1의 위치에 저장하기. 이런 방법으로 앞에서부터 뒤로가면서 계산할 수 있도록 하기.
-      그런데 이게 .map 으로 해야하는 일 인지 아니면 하지 않고 해결할 수 있는 일 인지 체크 필요.
-       */
-      if (value === "*" || value === "/") {
-        
+    /* 값 삽입 */
+    let resultInput = (calcIndex, r1) => {
+      calcArray[calcIndex - 1] = r1;
+      calcArray.splice(calcIndex, 2);
+    }
+
+    /* 연산 1 */
+    function calc1() {
+      let calcIndex = calcArray.findIndex((e) => e === "*" || e === "/");
+      if (calcArray[calcIndex] === "*") {
+        let r1 = parseFloat(calcArray[calcIndex - 1]) * parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, r1);
+        console.log(calcArray);
       }
-    });
+      if (calcArray[calcIndex] === "/") {
+        let r1 = parseFloat(calcArray[calcIndex - 1]) / parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, r1);
+        console.log(calcArray);
+      }
+    }
+
+    /* 연산 2 */
+    function calc2() {
+      let calcIndex = calcArray.findIndex((e) => e === "+" || e === "-");
+      if (calcArray[calcIndex] === "+") {
+        let r1 = parseFloat(calcArray[calcIndex - 1]) + parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, r1);
+        console.log(calcArray);
+      }
+      if (calcArray[calcIndex] === "-") {
+        let r1 = parseFloat(calcArray[calcIndex - 1]) - parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, r1);
+        console.log(calcArray);
+      }
+      result.textContent = calcArray;
+    }
+    for (let i = 0; i < calc1Count; i++) calc1();
+    for (let j = 0; j < calc2Count; j++) calc2();
   }
 
   /*******************
    * 키보드 이벤트
    *******************/
   document.addEventListener('keydown', (e) => {
-    if (e.keyCode === 8)  backSpace();
+    if (e.keyCode === 8) backSpace();
     if (e.keyCode === 13) calculate(result);
     if (e.keyCode === 27) allClear();
   });
@@ -79,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Target === key.textContent ? key.classList.add("pressed") : key.classList.remove("pressed");
       setTimeout(() => {
         key.classList.remove("pressed");
-      },1000)
+      }, 1000)
     });
     /* 키보드 입력 */
     if (typeof Target === "undefined") {
@@ -87,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (!isNaN(Target)) {
       oFlag = false;
       result.textContent += Target;
-    } else if(isNaN(Target)) {
+    } else if (isNaN(Target)) {
       if (oFlag) backSpace();
       result.textContent += Target;
       oFlag = true;
@@ -104,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
   keys.map(key => {
     key.addEventListener('click', setNum);
   });
-  
+
   function setNum() {
-    if(isNaN(this.textContent)) {
-      if(oFlag) backSpace();
+    if (isNaN(this.textContent)) {
+      if (oFlag) backSpace();
       result.textContent += this.textContent;
       oFlag = true;
     } else {

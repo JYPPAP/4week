@@ -18,40 +18,42 @@
         <h3>수수료 계산</h3>
         <ul class="price">
           <li class="raw1"><span>판매금액</span>
-            <div id="sell_price"></div>
+            <div>
+              <input type="text" name="sell_price" id="sell_price">
+              원
+            </div>
           </li>
           <li class="raw2"><span>수수료(5%)</span>
-            <div id="fee_price"></div>
+            <div id="fee_price">원</div>
           </li>
           <li class="raw3"><span>예상적립금액</span>
-            <div id="mile_price"></div>
+            <div id="mile_price">원</div>
           </li>
         </ul>
       </section>
       <!-- 계산기 -->
       <section id="calc">
         <h3>계산기 <span>calculator</span></h3>
-          <!-- <div id="result" class="display">12+13/15.15*12-14/13-12*12+10.10</div> -->
-          <div id="result" class="display">078961234-12459876124+12340987/12498.123-33467+2345*1245*1245-1254+1245.1245/125*125-1235+12354</div>
+        <div id="result" class="display"></div>
         <div id="AC">CLEAR</div>
         <div id="back">BACKSPACE</div>
         <div class="num">
-          <div class="key">&#55;</div>  <!-- "7" -->
-          <div class="key">&#56;</div>  <!-- "8" -->
-          <div class="key">&#57;</div>  <!-- "9" -->
-          <div class="key">&#47;</div>  <!-- "/" -->
-          <div class="key">&#52;</div>  <!-- "4" -->
-          <div class="key">&#53;</div>  <!-- "5" -->
-          <div class="key">&#54;</div>  <!-- "6" -->
-          <div class="key">&#42;</div>  <!-- "*" -->
-          <div class="key">&#49;</div>  <!-- "1" -->
-          <div class="key">&#50;</div>  <!-- "2" -->
-          <div class="key">&#51;</div>  <!-- "3" -->
-          <div class="key">&#45;</div>  <!-- "-" -->
-          <div class="key">&#48;</div>  <!-- "0" -->
+          <div class="key">&#55;</div> <!-- "7" -->
+          <div class="key">&#56;</div> <!-- "8" -->
+          <div class="key">&#57;</div> <!-- "9" -->
+          <div class="key">&#47;</div> <!-- "/" -->
+          <div class="key">&#52;</div> <!-- "4" -->
+          <div class="key">&#53;</div> <!-- "5" -->
+          <div class="key">&#54;</div> <!-- "6" -->
+          <div class="key">&#42;</div> <!-- "*" -->
+          <div class="key">&#49;</div> <!-- "1" -->
+          <div class="key">&#50;</div> <!-- "2" -->
+          <div class="key">&#51;</div> <!-- "3" -->
+          <div class="key">&#45;</div> <!-- "-" -->
+          <div class="key">&#48;</div> <!-- "0" -->
           <div class="key">&#48;&#48;</div> <!-- "00" -->
-          <div class="key">&#46;</div>  <!-- "." -->
-          <div class="key">&#43;</div>  <!-- "+" -->
+          <div class="key">&#46;</div> <!-- "." -->
+          <div class="key">&#43;</div> <!-- "+" -->
         </div>
         <div class="logo"></div>
         <div id="enter">&#61;</div>
