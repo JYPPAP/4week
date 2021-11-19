@@ -114,6 +114,7 @@ section {
       border-radius: 10px;
       text-align: right;
       padding-right: 10px;
+      overflow: hidden;
     }
     input {
       float: left;
@@ -125,6 +126,7 @@ section {
       outline: none;
       width: 92%;
       text-decoration: none;
+      overflow: hidden;
     }
   }
 }

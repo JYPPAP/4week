@@ -24,13 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
 
-  sell_price.oninput = () => price();
-  const price = () => {
-    backSpace();
-    // sell_price.value = (sell_price.value).toString()
-    // .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    fee_price.textContent = (sell_price.value * 0.05).toLocaleString() + " 원";
-    mile_price.textContent = (sell_price.value * 0.95).toLocaleString() + " 원";
+  sell_price.onkeydown = (e) => priceDown(e);
+  sell_price.onkeypress = (e) => pricePress(e);
+
+  const priceDown = (e) => {
+    e.stopPropagation();
+    if (e.keyCode === 27) {
+      sell_price.value = "";
+      fee_price.textContent = "원";
+      mile_price.textContent = "원";
+    }
+  }
+  const pricePress = (e) => {
+    /* 이벤트 중복 동작 방지 */
+    e.stopPropagation();
+    let numPrice = Number(sell_price.value.replace(/,/g, ""));
+    console.log(numPrice);
+    if (e.keyCode === 13) {
+      sell_price.value = numPrice.toLocaleString('ko-KR');
+      fee_price.textContent = (numPrice * 0.05).toLocaleString() + " 원";
+      mile_price.textContent = (numPrice * 0.95).toLocaleString() + " 원";
+    }
   }
   /*************
    * 계산기
@@ -45,11 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const keys = Array.from(document.getElementsByClassName("key"));
 
   /* 초기화 AC */
-  const allClear = () => result.textContent = "";
+  const allClear = () => {
+    result.textContent = "";
+  }
   allClear();
 
   /* backspace 동작 */
-  const backSpace = () => result.textContent = result.textContent.slice(0, -1);
+  const backSpace = () => {
+    result.textContent = result.textContent.slice(0, -1);
+  }
 
   /* 계산 */
   function calculate(result) {
@@ -59,8 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(calcArray);
 
     /* 값 삽입 */
-    let resultInput = (calcIndex, r1) => {
-      calcArray[calcIndex - 1] = r1;
+    let resultInput = (calcIndex, calcResult) => {
+      calcArray[calcIndex - 1] = calcResult;
       calcArray.splice(calcIndex, 2);
     }
 
@@ -68,28 +86,29 @@ document.addEventListener("DOMContentLoaded", () => {
     function calc1() {
       let calcIndex = calcArray.findIndex((e) => e === "*" || e === "/");
       if (calcArray[calcIndex] === "*") {
-        let r1 = parseFloat(calcArray[calcIndex - 1]) * parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, r1);
+        let calcResult = parseFloat(calcArray[calcIndex - 1]) * parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, calcResult);
         console.log(calcArray);
       }
       if (calcArray[calcIndex] === "/") {
-        let r1 = parseFloat(calcArray[calcIndex - 1]) / parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, r1);
+        let calcResult = parseFloat(calcArray[calcIndex - 1]) / parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, calcResult);
         console.log(calcArray);
       }
+      result.textContent = calcArray;
     }
 
     /* 연산 2 */
     function calc2() {
       let calcIndex = calcArray.findIndex((e) => e === "+" || e === "-");
       if (calcArray[calcIndex] === "+") {
-        let r1 = parseFloat(calcArray[calcIndex - 1]) + parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, r1);
+        let calcResult = parseFloat(calcArray[calcIndex - 1]) + parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, calcResult);
         console.log(calcArray);
       }
       if (calcArray[calcIndex] === "-") {
-        let r1 = parseFloat(calcArray[calcIndex - 1]) - parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, r1);
+        let calcResult = parseFloat(calcArray[calcIndex - 1]) - parseFloat(calcArray[calcIndex + 1]);
+        resultInput(calcIndex, calcResult);
         console.log(calcArray);
       }
       result.textContent = calcArray;
@@ -105,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.keyCode === 8) backSpace();
     if (e.keyCode === 13) calculate(result);
     if (e.keyCode === 27) allClear();
+
   });
 
   document.addEventListener('keypress', (e) => {
