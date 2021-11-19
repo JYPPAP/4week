@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* 연산 1 */
     function calc1() {
-      let calcIndex = calcArray.findIndex((e) => e === "*" || e === "/");
+      let calcIndex = calcArray.findIndex((ele) => ele === "*" || ele === "/");
       if (calcArray[calcIndex] === "*") {
         let calcResult = parseFloat(calcArray[calcIndex - 1]) * parseFloat(calcArray[calcIndex + 1]);
         resultInput(calcIndex, calcResult);
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* 연산 2 */
     function calc2() {
-      let calcIndex = calcArray.findIndex((e) => e === "+" || e === "-");
+      let calcIndex = calcArray.findIndex((ele) => ele === "+" || ele === "-");
       if (calcArray[calcIndex] === "+") {
         let calcResult = parseFloat(calcArray[calcIndex - 1]) + parseFloat(calcArray[calcIndex + 1]);
         resultInput(calcIndex, calcResult);
