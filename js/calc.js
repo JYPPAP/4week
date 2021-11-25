@@ -24,27 +24,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
 
-  sell_price.onkeydown = (e) => priceDown(e);
-  sell_price.onkeypress = (e) => pricePress(e);
-
-  const priceDown = (e) => {
+  sell_price.onkeydown = (e) => e.stopPropagation();
+  sell_price.onkeypress = (e) => e.stopPropagation();
+  sell_price.onkeyup = (e) => checkKeyCode(e);
+  function checkKeyCode(e) {
     e.stopPropagation();
-    if (e.keyCode === 27) {
+    if (!isNaN(e.key)) {
+      return makeMoneyFormat();
+    } else if (e.keyCode === 8) {
+      backSpace();
+      return makeMoneyFormat();
+    } else if (e.keyCode === 27) {
       sell_price.value = "";
-      fee_price.textContent = "원";
-      mile_price.textContent = "원";
+      fee_price.textContent = " 원";
+      mile_price.textContent = " 원";
+    } else {
+      window.alert( "숫자, BackSpace, ESC만 입력하실 수 있습니다.");
+      sell_price.value = "";
     }
   }
-  const pricePress = (e) => {
-    /* 이벤트 중복 동작 방지 */
-    e.stopPropagation();
+
+  function makeMoneyFormat() {
     let numPrice = Number(sell_price.value.replace(/,/g, ""));
-    console.log(numPrice);
-    if (e.keyCode === 13) {
-      sell_price.value = numPrice.toLocaleString('ko-KR');
-      fee_price.textContent = (numPrice * 0.05).toLocaleString() + " 원";
-      mile_price.textContent = (numPrice * 0.95).toLocaleString() + " 원";
-    }
+    sell_price.value = (Math.floor(numPrice)).toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    fee_price.textContent = (Math.floor(numPrice * 0.05 / 10)*10).toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
+    mile_price.textContent = (Math.floor(numPrice * 0.95 /10)*10).toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
   }
   /*************
    * 계산기
@@ -56,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clear = document.getElementById("AC");
   const back = document.getElementById("back");
   const enter = document.getElementById("enter");
-  const keys = Array.from(document.getElementsByClassName("key"));
+  const keys = Array.prototype.slice.call(document.getElementsByClassName("key"));
 
   /* 초기화 AC */
   const allClear = () => {
