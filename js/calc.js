@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const fee_price = document.getElementById("fee_price");
   const mile_price = document.getElementById("mile_price");
 
-  sell_price.onkeydown = (e) => e.stopPropagation();
   sell_price.onkeypress = (e) => e.stopPropagation();
   sell_price.onkeyup = (e) => checkKeyCode(e);
+
   function checkKeyCode(e) {
     e.stopPropagation();
     if (!isNaN(e.key)) {
@@ -39,19 +39,23 @@ document.addEventListener("DOMContentLoaded", () => {
       fee_price.textContent = " 원";
       mile_price.textContent = " 원";
     } else {
-      window.alert( "숫자, BackSpace, ESC만 입력하실 수 있습니다.");
+      window.alert(
+        " 숫자 : 0-9 \n BackSpace : 이전 숫자 지우기 \n ESC : 전부 지우기 \n 만 입력하실 수 있습니다.");
       sell_price.value = "";
+      fee_price.textContent = " 원";
+      mile_price.textContent = " 원";
     }
   }
 
   function makeMoneyFormat() {
     let numPrice = Number(sell_price.value.replace(/,/g, ""));
-    sell_price.value = (Math.floor(numPrice)).toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    fee_price.textContent = (Math.floor(numPrice * 0.05 / 10)*10).toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
-    mile_price.textContent = (Math.floor(numPrice * 0.95 /10)*10).toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
+
+    sell_price.value = (numPrice).toString()
+      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    fee_price.textContent = (Math.floor(numPrice * 0.05 / 10) * 10).toString()
+      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
+    mile_price.textContent = (Math.floor(numPrice * 0.95 / 10) * 10).toString()
+      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + " 원";
   }
   /*************
    * 계산기
@@ -69,113 +73,133 @@ document.addEventListener("DOMContentLoaded", () => {
   const allClear = () => {
     result.textContent = "";
   }
-  allClear();
 
   /* backspace 동작 */
   const backSpace = () => {
     result.textContent = result.textContent.slice(0, -1);
+    oFlag = true;
   }
 
-  /* 계산 */
+  /*******************
+   * 키보드 입력
+   *******************/
+  document.addEventListener('keyup', (e) => {
+    if (e.keyCode === 8) backSpace();
+    if (e.keyCode === 13) calculate(result);
+    if (e.keyCode === 27) allClear();
+  });
+
+  document.addEventListener('keypress', (e) => {
+    let target = keyHash[e.keyCode];
+
+    keyAnimation(target);
+    checkInput(target);
+  });
+
+  function keyAnimation(target) {
+    keys.map(key => {
+      target === key.textContent ? key.classList.add("pressed") : key.classList.remove("pressed");
+      setTimeout(() => {
+        key.classList.remove("pressed");
+      }, 1000)
+    });
+  }
+
+  /*******************
+   * 마우스 입력
+   *******************/
+  clear.onclick = e => allClear();
+  back.onclick = e => backSpace();
+  enter.onclick = e => calculate(result);
+
+  keys.map(key => {
+    key.addEventListener('click', setValue);
+  });
+
+  function setValue() {
+    target = this.textContent;
+    checkInput(target);
+  }
+
+  /*******************
+   * 입력값 체크
+   *******************/
+  function checkInput(target) {
+    let beforeInput;
+
+    if (typeof target === "undefined") {
+      return true;
+    }
+
+    if (!isNaN(target)) {
+      oFlag = false;
+      result.textContent += target;
+    } else if (target === "*" || target === "/" || target === "+" || target === "-" ) {
+      if (oFlag) backSpace();
+      result.textContent += target;
+      oFlag = true;
+    } else if ( target === ".") {
+      // if(typeof(result.textContent.pop()))
+      if ( isNaN(beforeInput)) {
+        result.textContent += "0";
+      }
+      result.textContent += target;
+    }
+    
+    beforeInput = target;
+    return beforeInput, oFlag;
+  }
+
+  /*******************
+   *      계산
+   *******************/
   function calculate(result) {
     let calcArray = result.textContent.match(/[\*\/\+\-]|(\d+\.\d+)|\d+/g);
     let calc1Count = calcArray.filter(ele => ele === "*" || ele === "/").length;
     let calc2Count = calcArray.filter(ele => ele === "+" || ele === "-").length;
     console.log(calcArray);
 
-    /* 값 삽입 */
-    let resultInput = (calcIndex, calcResult) => {
-      calcArray[calcIndex - 1] = calcResult;
-      calcArray.splice(calcIndex, 2);
-    }
-
-    /* 연산 1 */
-    function calc1() {
-      let calcIndex = calcArray.findIndex((ele) => ele === "*" || ele === "/");
-      if (calcArray[calcIndex] === "*") {
-        let calcResult = parseFloat(calcArray[calcIndex - 1]) * parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, calcResult);
-        console.log(calcArray);
-      }
-      if (calcArray[calcIndex] === "/") {
-        let calcResult = parseFloat(calcArray[calcIndex - 1]) / parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, calcResult);
-        console.log(calcArray);
-      }
-      result.textContent = calcArray;
-    }
-
-    /* 연산 2 */
-    function calc2() {
-      let calcIndex = calcArray.findIndex((ele) => ele === "+" || ele === "-");
-      if (calcArray[calcIndex] === "+") {
-        let calcResult = parseFloat(calcArray[calcIndex - 1]) + parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, calcResult);
-        console.log(calcArray);
-      }
-      if (calcArray[calcIndex] === "-") {
-        let calcResult = parseFloat(calcArray[calcIndex - 1]) - parseFloat(calcArray[calcIndex + 1]);
-        resultInput(calcIndex, calcResult);
-        console.log(calcArray);
-      }
-      result.textContent = calcArray;
-    }
-    for (let i = 0; i < calc1Count; i++) calc1();
-    for (let j = 0; j < calc2Count; j++) calc2();
+    for (let i = 0; i < calc1Count; i++) calc1(calcArray);
+    for (let j = 0; j < calc2Count; j++) calc2(calcArray);
   }
 
-  /*******************
-   * 키보드 이벤트
-   *******************/
-  document.addEventListener('keydown', (e) => {
-    if (e.keyCode === 8) backSpace();
-    if (e.keyCode === 13) calculate(result);
-    if (e.keyCode === 27) allClear();
+  function calc1(calcArray) {
+    let calcIndex = calcArray.findIndex((ele) => ele === "*" || ele === "/");
+    const prevIndex = parseFloat(calcArray[calcIndex - 1]);
+    const nextIndex = parseFloat(calcArray[calcIndex + 1]);
 
-  });
-
-  document.addEventListener('keypress', (e) => {
-    let Target = keyHash[e.keyCode];
-    /* 키보드 입력 애니메이션 */
-    keys.map(key => {
-      Target === key.textContent ? key.classList.add("pressed") : key.classList.remove("pressed");
-      setTimeout(() => {
-        key.classList.remove("pressed");
-      }, 1000)
-    });
-    /* 키보드 입력 */
-    if (typeof Target === "undefined") {
-      return true;
-    } else if (!isNaN(Target)) {
-      oFlag = false;
-      result.textContent += Target;
-    } else if (isNaN(Target)) {
-      if (oFlag) backSpace();
-      result.textContent += Target;
-      oFlag = true;
+    if (calcArray[calcIndex] === "*") {
+      let calcResult = prevIndex * nextIndex;
+      resultInput(calcArray, calcIndex, calcResult);
     }
-  });
-
-  /*******************
-   * 클릭 이벤트
-   *******************/
-  clear.onclick = e => allClear();
-  back.onclick = e => backSpace();
-  enter.onclick = e => calculate(result);
-  /* 마우스 값 입력 */
-  keys.map(key => {
-    key.addEventListener('click', setNum);
-  });
-
-  function setNum() {
-    if (isNaN(this.textContent)) {
-      if (oFlag) backSpace();
-      result.textContent += this.textContent;
-      oFlag = true;
-    } else {
-      oFlag = false;
-      result.textContent += this.textContent;
+    if (calcArray[calcIndex] === "/") {
+      let calcResult = prevIndex / nextIndex;
+      resultInput(calcArray, calcIndex, calcResult);
     }
+    result.textContent = calcArray;
   }
+
+  function calc2(calcArray) {
+    let calcIndex = calcArray.findIndex((ele) => ele === "+" || ele === "-");
+    const prevIndex = parseFloat(calcArray[calcIndex - 1]);
+    const nextIndex = parseFloat(calcArray[calcIndex + 1]);
+
+    if (calcArray[calcIndex] === "+") {
+      let calcResult = prevIndex + nextIndex;
+      resultInput(calcArray, calcIndex, calcResult);
+    }
+    if (calcArray[calcIndex] === "-") {
+      let calcResult = prevIndex - nextIndex;
+      resultInput(calcArray, calcIndex, calcResult);
+    }
+    result.textContent = calcArray;
+  }
+
+  function resultInput(calcArray, calcIndex, calcResult) {
+    calcArray[calcIndex - 1] = calcResult;
+    calcArray.splice(calcIndex, 2);
+  }
+
+
 
 });
